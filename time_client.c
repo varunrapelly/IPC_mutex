@@ -1,16 +1,3 @@
-/********************************************************
- * An example source module to accompany...
- *
- * "Using POSIX Threads: Programming with Pthreads"
- *     by Brad nichols, Dick Buttlar, Jackie Farrell
- *     O'Reilly & Associates, Inc.
- *
- ********************************************************
- * process_shared_mutex.c -- 
- *
- * Demonstrating the shared process mutex
- */
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -25,7 +12,6 @@
 #ifndef _POSIX_THREAD_PROCESS_SHARED
 #error This system does not support process shared mutex
 #endif
-#define SHMSZ     27
 
 int   shared_mem_id;
 int   *shared_mem_ptr;
@@ -34,8 +20,7 @@ pthread_mutexattr_t mutex_shared_attr;
 pthread_mutex_t	*mptr;
 
 time_t rawtime;
-	extern int
-main(void)
+int main(void)
 {
 	pid_t  child_pid;
 	int  status, rtn;
@@ -81,18 +66,17 @@ main(void)
 	for (i = 0; i <= 10; i++)
 	{
         timeinfo = localtime (shm);
-		printf("====CHILD=====waiting for lock\n");
+		printf("====CLIENT=====waiting for lock\n");
 		if ((rtn = pthread_mutex_lock(mptr)) != 0)
 			fprintf(stderr,"child:pthread_mutex_lock %s",strerror(rtn)),exit(1);
         printf ( "Current local time and date: %s", asctime (timeinfo) );
-		/* first child */
-		printf("\n====CHILD=====got lock sleeping 2\n");
+		printf("\n====CLIENT=====got lock sleeping 2\n");
 		sleep(2);
 		if ((rtn = pthread_mutex_unlock(mptr)) != 0)
 			fprintf(stderr,"child:pthread_unmutex_lock %s",strerror(rtn)),exit(1);
 	}
 	*shm = '*';
-	printf("====CHILD=====exit\n");
+	printf("====CLIENT=====exit\n");
 
 	return 0;
 }
